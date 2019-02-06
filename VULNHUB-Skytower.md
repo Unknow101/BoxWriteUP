@@ -6,7 +6,7 @@
 
 ## Introduction
 
-  While waiting for the start of my OSCP journey, I use to train a lot on HTB and Vulnhub Boxes. Today my internet connection was very poor , so I manage de find a way by downloading Skytower form Vulnhub (This box was recommanded for OSCP training)
+  While waiting for the start of my OSCP journey, I use to train a lot on HTB and Vulnhub Boxes. Today my internet connection was very poor , so I manage to find a way by downloading Skytower form Vulnhub (This box was recommanded for OSCP training)
   
   
 ## Enumaration
@@ -97,7 +97,7 @@ Connection to 127.0.0.1 closed.
 root@kali:~#
 ```
 
-Aaaaand ... we are eject by the server.
+Aaaaand ... we are reject from the server.
 To bypass this we can simply force the serveur to execute /bin/bash and no .bashrc, then delete bashrc with our shell and then login again.
 
 ```
